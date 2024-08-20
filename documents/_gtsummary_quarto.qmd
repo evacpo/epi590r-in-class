@@ -7,6 +7,10 @@ execute:
   echo: false 
 ---
 
+Information about the data:
+The NLSY79 Cohort is a longitudinal project that follows the lives of a sample of American youth born between 1957-64. The cohort originally included 12,686 respondents ages 14-22 when first interviewed in 1979; after two subsamples were dropped, 9,964 respondents remain in the eligible samples. Data are now available from Round 1 (1979 survey year) to Round 29 (2020 survey year).
+
+
 I don’t like seeing the output from the first chunk, where the packages are loaded. Use an option that makes it so that we don’t see this chunk’s output.
 
 ```{r}
@@ -63,3 +67,13 @@ execute:
   echo: false 
   
  to the yaml section of the doc
+
+```{r}
+#| error: true
+tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir))
+```
+
