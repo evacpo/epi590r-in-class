@@ -4,14 +4,14 @@ format:
   html:
     theme: sketchy
 execute:
-  echo: false 
+  echo: True 
 ---
 
-Information about the data:
+**Information about the data**: 
+
 The NLSY79 Cohort is a longitudinal project that follows the lives of a sample of American youth born between 1957-64. The cohort originally included 12,686 respondents ages 14-22 when first interviewed in 1979; after two subsamples were dropped, 9,964 respondents remain in the eligible samples. Data are now available from Round 1 (1979 survey year) to Round 29 (2020 survey year).
 
-
-I don’t like seeing the output from the first chunk, where the packages are loaded. Use an option that makes it so that we don’t see this chunk’s output.
+Exercise: I don’t like seeing the output from the first chunk, where the packages are loaded. Use an option that makes it so that we don’t see this chunk’s output.
 
 ```{r}
 #| warning: false
@@ -58,17 +58,17 @@ tbl_summary(
   missing_text = "Missing")
 ```
 
-
 Let’s not print the code from creating the tables. Using an option for the whole document, make it so that we don’t see the code from any of the chunks.
 
-We'll add this: 
-execute:
-  eval: false
-  echo: false 
-  
- to the yaml section of the doc
+We'll add this: execute: eval: false echo: false
+
+to the yaml section of the doc
+
+For this next chunk
 
 ```{r}
+#| label: Last Table
+
 #| error: true
 tbl_summary(
   nlsy,
@@ -76,4 +76,103 @@ tbl_summary(
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir))
 ```
+
+Choose a table to label and caption, and then write a sentence that cross-references it (e.g., Table 1 shows the descriptive statistics)
+
+
+```{r}
+#| label: tbl-one
+#| tbl-cap: "This is a great table"
+tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir))
+
+
+
+```
+
+@tbl-one shows the descriptive statistics
+
+#Means 
+
+```{r}
+#| echo: false
+mean(nlsy$sleep_wknd, na.rm = TRUE)
+
+
+```
+
+```{r}
+Avg_Wknd_Sleep <- mean(nlsy$sleep_wknd, na.rm = TRUE)
+```
+
+The average hours of sleep on weekends is `r Avg_Wknd_Sleep`
+
+The average hours of sleep on weekends is `r mean(nlsy$sleep_wknd, na.rm = TRUE)`
+
+
+
+#Medians
+```{r}
+#| echo: false
+median(nlsy$sleep_wknd, na.rm = TRUE)
+
+
+```
+
+```{r}
+Median_Wknd_Sleep <- median(nlsy$sleep_wknd, na.rm = TRUE)
+```
+
+The median number of hours of sleep on weekends is `r Median_Wknd_Sleep`
+
+The median number of hours of sleep on weekends is `r median(nlsy$sleep_wknd, na.rm = TRUE)`
+
+#Exercises part 2
+
+```{r}
+
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+#| output-location: slide
+table1ppt <- tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir)) |> 
+  add_overall(last = TRUE)
+table1ppt
+
+
+inline_text(table1ppt, variable = "age_bir", column = "stat_1")
+
+```
+The median (IQR) age of the male participants at the birth of their first child is `r inline_text(table1ppt, variable = "age_bir", column = "stat_1")`
+
+Edit or create a new table that has the median hours of sleep on weekends in it (in the overall sample).
+
+From that table, pull out the that value and include in the text using inline_text().
+```{r}
+
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+table1ppt <- tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir, sleep_wknd)) |> 
+  add_overall(last = TRUE)
+table1ppt
+
+med_wkndsleep <- inline_text(table1ppt, variable = "sleep_wknd", column = "stat_0")
+
+# for columns, overall column is stat_0 and then starts at 1 from left side
+
+```
+
+The median hours and IQR of sleep on weekends for the overall sample is `r inline_text(table1ppt, variable = "sleep_wknd", column = "stat_0")` hours.
+
+The median hours and IQR of sleep on weekends for the overall sample is `r med_wkndsleep` hours.
 
