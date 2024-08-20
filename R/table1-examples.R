@@ -35,7 +35,7 @@ tbl_summary(
 		glasses ~ "Wears glasses",
 		age_bir ~ "Age at first birth"
 	),
-	missing_text = "Missing")
+	missing_text = "Missing"
 
 
 tbl_summary(
@@ -56,4 +56,44 @@ tbl_summary(
 	bold_labels() |>
 	modify_footnote(update = everything() ~ NA) |>
 	modify_header(label = "**Variable**", p.value = "**P**")
+
+
+
+#selecting categorical region, race/ethnicity, income, and the sleep variables
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(contains("sleep"),region_cat, race_eth_cat,
+							income),
+	label = list(
+		region_cat ~ "Region",
+		race_eth_cat ~ "Race/ethnicity",
+		income ~ "Income",
+		sleep_wkdy ~ "Weekday Sleep",
+		sleep_wknd ~ "Weekend Sleep"
+	),
+	statistic = list(
+		income ~ "({p10}, {p90})",
+		sleep_wkdy ~ "min = {min}; max = {max}",
+		sleep_wknd ~ "min = {min}, max = {max}"
+		),
+	digits = list(income ~ c(3, 3),
+								sleep_wkdy ~ c(1,1),
+								sleep_wknd ~ c(1,1)
+		),
+	missing_text = "Missing") |>
+	#these are arguments
+	add_p(test = list(
+										all_categorical() ~ "chisq.test")) |>
+	add_overall(col_label = "**Total** N = {N}") |>
+	bold_labels() |>
+	modify_table_styling(
+		columns = label,
+		rows = label == "Race/ethnicity",
+		footnote = "NLSY Participant Classification: https://www.nlsinfo.org/content/cohorts/nlsy79/topical-guide/household/race-ethnicity-immigration-data"
+	) |>
+	modify_footnote(update = everything() ~ NA) |>
+	modify_header(label = "**Variable**", p.value = "**P**")
+
+
 
